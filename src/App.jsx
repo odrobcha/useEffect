@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Places from './components/Places.jsx';
 import { AVAILABLE_PLACES } from './data.js';
@@ -9,13 +9,13 @@ import { sortPlacesByDistance } from './loc';
 
 const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
 const storedPlaces = storedIds.map((id) => {
-  return AVAILABLE_PLACES.find((place) => place.id === id);
+    return AVAILABLE_PLACES.find((place) => place.id === id);
 });
 
 function App () {
 
     const selectedPlace = useRef();
-    const[modalIsOpen, setModalIsOpen] = useState(false)
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [availablePlaces, setAvailablePlaces] = useState([]);
     const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
 
@@ -33,13 +33,13 @@ function App () {
     }, []);
 
     function handleStartRemovePlace (id) {
-      setModalIsOpen(true);
+        setModalIsOpen(true);
         selectedPlace.current = id;
 
     }
 
     function handleStopRemovePlace () {
-      setModalIsOpen(false)
+        setModalIsOpen(false);
     }
 
     function handleSelectPlace (id) {
@@ -58,18 +58,18 @@ function App () {
 
     }
 
-    function handleRemovePlace () {
-        setPickedPlaces((prevPickedPlaces) =>
-          prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
-        );
-        const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
-        localStorage.setItem('selectedPlaces', JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current)));
-      setModalIsOpen(false)
-    }
+   const handleRemovePlace = useCallback(function handleRemovePlace () {
+          setPickedPlaces((prevPickedPlaces) =>
+            prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
+          );
+          const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+          localStorage.setItem('selectedPlaces', JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current)));
+          setModalIsOpen(false);
+      }, []);
 
     return (
       <>
-          <Modal open={modalIsOpen} onClose = {handleStopRemovePlace}>
+          <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
               <DeleteConfirmation
                 onCancel={handleStopRemovePlace}
                 onConfirm={handleRemovePlace}
