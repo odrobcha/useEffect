@@ -12,6 +12,7 @@ Documentation  https://vitejs.dev/guide/why.html
 
 ## SideEffect
 Is the tasks that need to be executed that do NOT impact the current component render cycle
+!!!! useEffectex ecutes when component is rendered
 
 useEffect(()=>{
   sideEffectFunction
